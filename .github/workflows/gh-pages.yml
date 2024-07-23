@@ -21,7 +21,7 @@ jobs:
           node-version: "18"
           cache: "npm"
 
-      - run: yarn install --frozen-lockfile && yarn run build
+      - run: npm install && npm run build
 
       - run: ls /home/runner/work/alph-mining-roi/alph-mining-roi/out
 
@@ -33,6 +33,5 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: out
-          keep_files: true
 
       - run: ls /home/runner/work/alph-mining-roi/alph-mining-roi/out
