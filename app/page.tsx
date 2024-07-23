@@ -101,11 +101,13 @@ export default function HomePage() {
   // fetch the current network hashrate
   useEffect(() => {
     const handle = async () => {
-      const res0 = await fetch(nodeUrl + '/infos/current-hashrate')
+      const now = Date.now()
+      const oneDayBefore = now - 24 * 3600 * 1000 - 1
+      const res0 = await fetch(explorerUrl + `/charts/hashrates?fromTs=${oneDayBefore}&toTs=${now}&interval-type=daily`)
       if (res0.status === 200) {
         const res1 = await res0.json()
-        const hashrate = res1.hashrate.split(' ')[0]
-        const ths = parseFloat(hashrate) / (10 ** 6)
+        const hashrate = res1[0].hashrate
+        const ths = parseFloat(hashrate) / (10 ** 12)
         form.setValues({ networkHashrate: ths })
       }
 
@@ -232,7 +234,7 @@ export default function HomePage() {
         <Grid.Col span={{ base: 12, xs: 4 }}>
           <TextInput
             type='number'
-            label='Current Network Hashrate'
+            label='Network Hashrate (24h avg)'
             placeholder='1.0'
             rightSection={
               <Text mr='md' fw='bold'>
