@@ -22,6 +22,8 @@ jobs:
 
       - run: yarn install --frozen-lockfile && yarn run build
 
+      - run: tree /home/runner/work/alph-mining-roi/
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/test-gh' }}
