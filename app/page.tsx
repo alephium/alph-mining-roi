@@ -135,22 +135,36 @@ export default function HomePage() {
     const daysUntilStable = calDaysUntilStable()
     const currentDailyEmission = calCurrentDailyEmission()
     const dayIndexesUntilStable = Array.from({ length: daysUntilStable }, (_, i) => i + 1)
-    const minedAlphBeforeStable = dayIndexesUntilStable.map((day) => calculateMinedAlphBeforeStable(currentDailyEmission, day))
+    const minedAlphBeforeStable = dayIndexesUntilStable.map((day) =>
+      calculateMinedAlphBeforeStable(currentDailyEmission, day)
+    )
     const profitsBeforeStable = minedAlphBeforeStable.map(
       (minedAlph, index) =>
         minedAlph * form.values.alphPrice -
         form.values.electricityCost * 24 * form.values.minerPower * (index + 1)
     )
     const breakEvenDays = profitsBeforeStable.findIndex((profit) => profit > form.values.minerCost)
-    result.setValues({
-      breakEvenDays: breakEvenDays + 1,
-      breakEvenAlph: minedAlphBeforeStable[breakEvenDays],
-      minedAlph1day: minedAlphBeforeStable[0],
-      minedAlph7day: minedAlphBeforeStable[6],
-      minedAlph1month: minedAlphBeforeStable[29],
-      minedAlph6month: minedAlphBeforeStable[179],
-      minedAlph1year: minedAlphBeforeStable[364]
-    })
+    if (breakEvenDays !== -1) {
+      result.setValues({
+        breakEvenDays: breakEvenDays + 1,
+        breakEvenAlph: minedAlphBeforeStable[breakEvenDays],
+        minedAlph1day: minedAlphBeforeStable[0],
+        minedAlph7day: minedAlphBeforeStable[6],
+        minedAlph1month: minedAlphBeforeStable[29],
+        minedAlph6month: minedAlphBeforeStable[179],
+        minedAlph1year: minedAlphBeforeStable[364],
+      })
+    } else {
+      result.setValues({
+        breakEvenDays: undefined,
+        breakEvenAlph: undefined,
+        minedAlph1day: minedAlphBeforeStable[0],
+        minedAlph7day: minedAlphBeforeStable[6],
+        minedAlph1month: minedAlphBeforeStable[29],
+        minedAlph6month: minedAlphBeforeStable[179],
+        minedAlph1year: minedAlphBeforeStable[364],
+      })
+    }
   }, [form])
 
   return (
@@ -164,6 +178,9 @@ export default function HomePage() {
       <Welcome />
       <Text c='dimmed' ta='center' size='lg' maw={580} mx='auto'>
         This is a simple ROI calculator for ALPH mining based on the current network hashrate and ALPH price. Not Financial Advice.
+      </Text>
+      <Text c='indigo' ta='center' size='lg' maw={580} mx='auto'>
+        The network hashrate might be much higher than the current value in the future. Please take this into consideration and adjust the parameter.
       </Text>
       <NativeSelect
         miw={300}
