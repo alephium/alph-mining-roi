@@ -4,8 +4,8 @@ import { MantineProvider, ColorSchemeScript } from '@mantine/core'
 import { theme } from '../theme'
 
 export const metadata = {
-  title: 'Mantine Next.js template',
-  description: 'I am using Mantine with Next.js!',
+  title: 'ALPH mining ROI estimator',
+  description: 'Simple ROI calculator for ALPH mining based on the current network hashrate and ALPH price. Not Financial Advice.',
 }
 
 export default function RootLayout({ children }: { children: any }) {
