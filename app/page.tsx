@@ -4,6 +4,7 @@ import { Button, Grid, Group, NativeSelect, Space, Stack, Table, Text, TextInput
 import { Welcome } from '../components/Welcome/Welcome'
 import { useForm } from '@mantine/form'
 import { useCallback, useEffect, useState } from 'react'
+import { convertHttpResponse, NodeProvider } from '@alephium/web3'
 
 type MinerInfo = { name: string; hashrate: number; power: number; cost: number }
 const asicMiners: Record<string, MinerInfo> =
@@ -37,6 +38,9 @@ const asicMiners: Record<string, MinerInfo> =
 const stableRewardDate = new Date('2025-11-08')
 const stableRewardPerBlock = 0.3125 // approximately
 const dailyDecreaseUntilStable = 0.000428 // approximately
+
+const nodeUrl = 'https://node.mainnet.alephium.org'
+const explorerUrl = 'https://backend.mainnet.alephium.org'
 
 function calDaysUntilStable() {
   const today = new Date()
@@ -94,6 +98,31 @@ export default function HomePage() {
     }
   }, [asicMiner])
 
+  // fetch the current network hashrate
+  useEffect(() => {
+    const handle = async () => {
+      const res0 = await fetch(nodeUrl + '/infos/current-hashrate')
+      if (res0.status === 200) {
+        const res1 = await res0.json()
+        const hashrate = res1.hashrate.split(' ')[0]
+        const ths = parseFloat(hashrate) / (10 ** 6)
+        form.setValues({ networkHashrate: ths })
+      }
+
+      const res2 = await fetch(explorerUrl + '/market/prices?currency=usd', {
+        method: "POST",
+        body: JSON.stringify(["ALPH"]),
+      })
+      if (res2.status === 200) {
+        const res3 = await res2.json()
+        const price = res3[0]
+        form.setValues({ alphPrice: price })
+      }
+    }
+
+    handle()
+  }, [])
+
   const calculateMinedAlphBeforeStable = useCallback((currentDailyEmission: number, days: number) => {
     const averageDailyEmission = currentDailyEmission - dailyDecreaseUntilStable * (days - 1) / 2
     const minedAlph = days * averageDailyEmission * (24 * 3600) * form.values.minerHashrate / form.values.networkHashrate
@@ -102,21 +131,15 @@ export default function HomePage() {
 
   const calculate = useCallback(() => {
     const daysUntilStable = calDaysUntilStable()
-    console.log('days', daysUntilStable)
     const currentDailyEmission = calCurrentDailyEmission()
-    console.log('currentDailyEmission', currentDailyEmission)
     const dayIndexesUntilStable = Array.from({ length: daysUntilStable }, (_, i) => i + 1)
     const minedAlphBeforeStable = dayIndexesUntilStable.map((day) => calculateMinedAlphBeforeStable(currentDailyEmission, day))
-    console.log(`=== ${form.values.minerHashrate} TH/s ${form.values.networkHashrate} TH/s ===`)
-    console.log(minedAlphBeforeStable)
     const profitsBeforeStable = minedAlphBeforeStable.map(
       (minedAlph, index) =>
         minedAlph * form.values.alphPrice -
         form.values.electricityCost * 24 * form.values.minerPower * (index + 1)
     )
-    console.log(profitsBeforeStable)
     const breakEvenDays = profitsBeforeStable.findIndex((profit) => profit > form.values.minerCost)
-    console.log('breakEvenDays', breakEvenDays + 1)
     result.setValues({
       breakEvenDays: breakEvenDays + 1,
       breakEvenAlph: minedAlphBeforeStable[breakEvenDays],

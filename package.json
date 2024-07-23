@@ -17,6 +17,7 @@
     "test": "npm run prettier:check && npm run lint && npm run typecheck && npm run jest"
   },
   "dependencies": {
+    "@alephium/web3": "^1.2.4",
     "@mantine/core": "7.9.0",
     "@mantine/form": "^7.11.2",
     "@mantine/hooks": "7.9.0",
