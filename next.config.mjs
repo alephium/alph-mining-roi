@@ -7,7 +7,6 @@ const withBundleAnalyzer = bundleAnalyzer({
 export default withBundleAnalyzer({
   output: 'export',
   reactStrictMode: false,
-  basePath: '/alph-mining-roi',
   eslint: {
     ignoreDuringBuilds: true,
   },
