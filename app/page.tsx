@@ -75,7 +75,7 @@ export default function HomePage() {
 
   const result = useForm({
     initialValues: {
-      breakEvenDays: undefined as number | undefined,
+      breakEvenDays: undefined as number | string | undefined,
       breakEvenAlph: undefined as number | undefined,
       minedAlph1day: undefined as number | undefined,
       minedAlph7day: undefined as number | undefined,
@@ -156,7 +156,7 @@ export default function HomePage() {
       })
     } else {
       result.setValues({
-        breakEvenDays: undefined,
+        breakEvenDays: `> ${daysUntilStable}`,
         breakEvenAlph: undefined,
         minedAlph1day: minedAlphBeforeStable[0],
         minedAlph7day: minedAlphBeforeStable[6],
