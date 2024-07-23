@@ -155,7 +155,6 @@ export default function HomePage() {
 
   return (
     <Stack
-      h={{ base: 550, lg: '70vh' }}
       justify='center'
       align='center'
       gap={rem(24)}
