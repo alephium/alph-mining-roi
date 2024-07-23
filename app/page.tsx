@@ -9,25 +9,25 @@ import { convertHttpResponse, NodeProvider } from '@alephium/web3'
 type MinerInfo = { name: string; hashrate: number; power: number; cost: number }
 const asicMiners: Record<string, MinerInfo> =
   {
-    custom: {
+    Custom: {
       name: 'Unknown ASIC Miner',
       hashrate: 1.0,
       power: 1.0,
       cost: 10000,
     },
-    bitmainAL1: {
+    BitmainAL1: {
       name: 'Bitmain Antminer L1',
       hashrate: 15.6,
       power: 3.51,
       cost: 29260,
     },
-    iceriverAL0: {
+    IceriverAL0: {
       name: 'Ice River ALPH AL0',
       hashrate: 0.4,
       power: 0.1,
       cost: 799,
     },
-    goldshellALII: {
+    GoldshellALII: {
       name: 'Goldshell AL BOX II',
       hashrate: 1.440,
       power: 0.36,
@@ -60,7 +60,7 @@ export default function HomePage() {
       minerHashrate: 1.0,
       minerPower: 1.0,
       electricityCost: 0.1,
-      networkHashrate: 2000,
+      networkHashrate: 0.0,
       alphPrice: 2.0,
     },
     validate: {
@@ -85,7 +85,8 @@ export default function HomePage() {
     },
   })
 
-  const [asicMiner, setAsicMiner] = useState('custom')
+  const [asicMiner, setAsicMiner] = useState('Custom')
+  const [currentHashrate, setCurrentHashrate] = useState(undefined as number | undefined)
 
   useEffect(() => {
     const minerInfo = asicMiners[asicMiner] as MinerInfo | undefined
@@ -108,7 +109,7 @@ export default function HomePage() {
         const res1 = await res0.json()
         const hashrate = res1[0].hashrate
         const ths = parseFloat(hashrate) / (10 ** 12)
-        form.setValues({ networkHashrate: ths })
+        setCurrentHashrate(Math.ceil(ths))
       }
 
       const res2 = await fetch(explorerUrl + '/market/prices?currency=usd', {
@@ -179,8 +180,8 @@ export default function HomePage() {
       <Text c='dimmed' ta='center' size='lg' maw={580} mx='auto'>
         This is a simple ROI calculator for ALPH mining based on the current network hashrate and ALPH price. Not Financial Advice.
       </Text>
-      <Text c='indigo' ta='center' size='lg' maw={580} mx='auto'>
-        The network hashrate might be much higher than the current value in the future. Please take this into consideration and adjust the parameter.
+      <Text c='blue' ta='center' size='lg' maw={580} mx='auto'>
+        The network hashrate might be much higher than the current value in the future. Please take this into consideration.
       </Text>
       <NativeSelect
         miw={300}
@@ -250,7 +251,7 @@ export default function HomePage() {
         <Grid.Col span={{ base: 12, xs: 4 }}>
           <TextInput
             type='number'
-            label='Network Hashrate (24h avg)'
+            label={`Network Hashrate ${ currentHashrate ? `(Current: ${currentHashrate} TH/s)` : ''}`}
             placeholder='1.0'
             rightSection={
               <Text mr='md' fw='bold'>
