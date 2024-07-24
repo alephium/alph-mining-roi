@@ -24,16 +24,16 @@ const asicMiners: Record<string, MinerInfo> =
       power: 3.51,
       cost: 41800,
     },
-    'Ice River ALPH AL0': {
-      hashrate: 0.4,
-      power: 0.1,
-      cost: 799,
-    },
     'Goldshell AL BOX II': {
       hashrate: 1.440,
       power: 0.36,
       cost: 6350,
     },
+    'Ice River ALPH AL0': {
+      hashrate: 0.4,
+      power: 0.1,
+      cost: 799,
+    }
   }
 
 const stableRewardDate = new Date('2025-11-08')
@@ -187,7 +187,7 @@ export default function HomePage() {
       <NativeSelect
         miw={300}
         label='Select ASIC Miner'
-        description='Randomly ordered list of ASIC miners'
+        description='Miners are ordered alphabetically'
         data={Object.keys(asicMiners)}
         value={asicMiner}
         onChange={(event) => setAsicMiner(event.currentTarget.value)}
