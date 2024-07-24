@@ -6,29 +6,30 @@ import { useForm } from '@mantine/form'
 import { useCallback, useEffect, useState } from 'react'
 import { convertHttpResponse, NodeProvider } from '@alephium/web3'
 
-type MinerInfo = { name: string; hashrate: number; power: number; cost: number }
+type MinerInfo = { hashrate: number; power: number; cost: number }
 const asicMiners: Record<string, MinerInfo> =
   {
-    Custom: {
-      name: 'Unknown ASIC Miner',
+    'Custom ASIC Miner': {
       hashrate: 1.0,
       power: 1.0,
       cost: 10000,
     },
-    BitmainAL1: {
-      name: 'Bitmain Antminer L1',
+    'Bitmain Antminer L1 (with coupon)': {
       hashrate: 15.6,
       power: 3.51,
       cost: 29260,
     },
-    IceriverAL0: {
-      name: 'Ice River ALPH AL0',
+    'Bitmain Antminer L1 (without coupon)': {
+      hashrate: 15.6,
+      power: 3.51,
+      cost: 41800,
+    },
+    'Ice River ALPH AL0': {
       hashrate: 0.4,
       power: 0.1,
       cost: 799,
     },
-    GoldshellALII: {
-      name: 'Goldshell AL BOX II',
+    'Goldshell AL BOX II': {
       hashrate: 1.440,
       power: 0.36,
       cost: 6350,
